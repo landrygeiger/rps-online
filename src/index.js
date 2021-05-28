@@ -1,18 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PageHeading from './components/page-heading';
-import MainPageContent from './components/main-page-content';
+import App from "./components/App";
 
-class App extends React.Component {
-  render() {
-    return (
-      <div>
-        <PageHeading />
-        <MainPageContent />
-      </div>
-    );
-  }
-}
+// Import bootstrap css
+import "bootstrap/dist/css/bootstrap.min.css";
 
 ReactDOM.render(
     <App />,
