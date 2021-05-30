@@ -1,6 +1,14 @@
 import { Form, Button, Card, Alert } from "react-bootstrap";
 import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContexts";
+
+const cardStyle = {
+    borderRadius: "15px",
+    padding: "30px",
+    maxWidth: "400px",
+    width: "100%"
+}
 
 export const SignUp = () => {
     const emailRef = useRef();
@@ -30,39 +38,75 @@ export const SignUp = () => {
     }
 
     return (
-        <div className="w-100" style={{maxWidth: "400px"}}>
-            <Card className="shadow"style={{borderRadius: "15px", padding: "30px"}}>
-                <Card.Body>
-                    <h2 className="text-center mb-4">Sign Up</h2>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    <Form className="mb-4" onSubmit={handleSubmit}>
-                        <Form.Group id="email" className="mb-2">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control type="email" ref={emailRef} required />
-                        </Form.Group>
-                        <Form.Group id="password" className="mb-2">
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" ref={passwordRef} required />
-                        </Form.Group>
-                        <Form.Group id="confirm-password" className="mb-2">
-                            <Form.Label>Confirm Password</Form.Label>
-                            <Form.Control type="password" ref={confirmPasswordRef} required />
-                        </Form.Group>
-                        <Button disabled={loading} type="submit" className="w-100"><i className="far fa-edit"></i> Sign Up</Button>
-                    </Form>
-                    <div className="text-center mt-4">
-                        <p>Already have an account? <a href="google.com">Log in</a></p>
-                    </div>
-                </Card.Body>
-            </Card>
-        </div>
+        <Card className="shadow" style={cardStyle}>
+            <Card.Body>
+                <h2 className="text-center mb-4">Sign Up</h2>
+                {error && <Alert variant="danger">{error}</Alert>}
+                <Form className="mb-4" onSubmit={handleSubmit}>
+                    <Form.Group id="email" className="mb-2">
+                        <Form.Label>Email</Form.Label>
+                        <Form.Control type="email" ref={emailRef} required />
+                    </Form.Group>
+                    <Form.Group id="password" className="mb-2">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" ref={passwordRef} required />
+                    </Form.Group>
+                    <Form.Group id="confirm-password" className="mb-4">
+                        <Form.Label>Confirm Password</Form.Label>
+                        <Form.Control type="password" ref={confirmPasswordRef} required />
+                    </Form.Group>
+                    <Button disabled={loading} type="submit" className="w-100"><i className="far fa-edit"></i> Sign Up</Button>
+                </Form>
+                <div className="text-center mt-4">
+                    <p>Already have an account? <Link to="/login">Log in</Link></p>
+                </div>
+            </Card.Body>
+        </Card>
     );
 }
 
 export const Login = () => {
-    return (
-        <div>
+    const emailRef = useRef();
+    const passwordRef = useRef();
+    const { login, currentUser } = useAuth();
 
-        </div>
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            setError("");
+            setLoading(true);
+            await login(emailRef.current.value, passwordRef.current.value);
+        } catch {
+            setError("Failed to login");
+        }
+
+        setLoading(false);
+    }
+
+    return (
+        <Card className="shadow" style={cardStyle}>
+            <Card.Body>
+                <h2 className="mb-2 text-center">Login</h2>
+                {error && <Alert variant="danger">{error}</Alert>}
+                <Form>
+                    <Form.Group id="email" className="mb-2">
+                        <Form.Label>Email</Form.Label>
+                        <Form.Control type="email" ref={emailRef} required />
+                    </Form.Group>
+                    <Form.Group id="password" className="mb-2">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" ref={passwordRef} required />
+                    </Form.Group>
+                    <Button disabled={loading} type="submit" className="w-100 mt-4" onClick={handleSubmit}>Login</Button>
+                </Form>
+                <div className="mt-4 text-center">
+                    <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
+                </div>
+            </Card.Body>
+        </Card>
     )
 }

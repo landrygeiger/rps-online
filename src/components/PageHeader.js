@@ -32,8 +32,8 @@ const PageHeader = () => {
                         <Link to="/login">
                             <Button variant="primary"><i className="far fa-user"></i> Login</Button>
                         </Link>
-                        <Link to="/sign-up">
-                            <Button variant="outline-primary" style={{marginLeft: "15px"}}><i className="far fa-edit"></i> Sign-Up</Button>
+                        <Link to="/signup">
+                            <Button variant="outline-primary" style={{marginLeft: "15px"}}><i className="far fa-edit"></i> Sign Up</Button>
                         </Link>
                     </div>
                 </Container>

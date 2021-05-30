@@ -1,7 +1,7 @@
 import React from "react";
 import PageHeader from "./PageHeader";
 import MainPageContent from "./MainPageContent";
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Login, SignUp } from "./AuthComponents";
 import { Container } from "react-bootstrap";
 import { AuthProvider } from "../contexts/AuthContexts";
@@ -11,14 +11,16 @@ class App extends React.Component {
       return (
         <div>
             <AuthProvider>
-                <BrowserRouter>
+                <Router>
                     <PageHeader />
                     <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: "calc(100vh - 125px" }}>
-                        <Route path="/" exact component={MainPageContent} />
-                        <Route path="/login" component={Login} />
-                        <Route path="/sign-up" component={SignUp} />
+                        <Switch>
+                            <Route path="/" exact component={MainPageContent} />
+                            <Route path="/login" component={Login} />
+                            <Route path="/signup" component={SignUp} />
+                        </Switch>
                     </Container>
-                </BrowserRouter>
+                </Router>
             </AuthProvider>
         </div>
       );
