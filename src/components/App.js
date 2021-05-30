@@ -13,7 +13,9 @@ class App extends React.Component {
             <AuthProvider>
                 <Router>
                     <PageHeader />
-                    <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: "calc(100vh - 125px" }}>
+                    <Container className="d-flex align-items-center justify-content-center"
+                                style={{ minHeight: "calc(100vh - 125px" }}>
+                                { /* 125px for header */ }
                         <Switch>
                             <Route path="/" exact component={MainPageContent} />
                             <Route path="/login" component={Login} />

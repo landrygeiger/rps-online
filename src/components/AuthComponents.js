@@ -38,7 +38,7 @@ export const SignUp = () => {
     }
 
     return (
-        <Card className="shadow" style={cardStyle}>
+        <Card className="shadow content-card card-2">
             <Card.Body>
                 <h2 className="text-center mb-4">Sign Up</h2>
                 {error && <Alert variant="danger">{error}</Alert>}
@@ -88,7 +88,7 @@ export const Login = () => {
     }
 
     return (
-        <Card className="shadow" style={cardStyle}>
+        <Card className="shadow content-card card-2">
             <Card.Body>
                 <h2 className="mb-2 text-center">Login</h2>
                 {error && <Alert variant="danger">{error}</Alert>}
