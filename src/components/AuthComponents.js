@@ -1,20 +1,14 @@
 import { Form, Button, Card, Alert } from "react-bootstrap";
 import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContexts";
-
-const cardStyle = {
-    borderRadius: "15px",
-    padding: "30px",
-    maxWidth: "400px",
-    width: "100%"
-}
 
 export const SignUp = () => {
     const emailRef = useRef();
     const passwordRef = useRef();
     const confirmPasswordRef = useRef();
     const { signup } = useAuth();
+    const history = useHistory();
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -30,6 +24,7 @@ export const SignUp = () => {
             setError("");
             setLoading(true);
             await signup(emailRef.current.value, passwordRef.current.value);
+            history.push("/");
         } catch {
             setError("Failed to create account");
         }
@@ -68,7 +63,8 @@ export const SignUp = () => {
 export const Login = () => {
     const emailRef = useRef();
     const passwordRef = useRef();
-    const { login, currentUser } = useAuth();
+    const { login } = useAuth();
+    const history = useHistory();
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -80,6 +76,7 @@ export const Login = () => {
             setError("");
             setLoading(true);
             await login(emailRef.current.value, passwordRef.current.value);
+            history.push("/");
         } catch {
             setError("Failed to login");
         }

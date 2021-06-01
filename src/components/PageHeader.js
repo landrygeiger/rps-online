@@ -78,7 +78,7 @@ const SignOutAndProfileInputs = () => {
     return (
         <div>
             {error && <Alert variant="danger">{error}</Alert>}
-            <Button variant="link" onClick={handleSignout}>Sign Out</Button>
+            <Button disabled={loading} variant="link" onClick={handleSignout}>Sign Out</Button>
             <p style={{display: "inline"}}>{currentUser.email}</p>
         </div>
     );
