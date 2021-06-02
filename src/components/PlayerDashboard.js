@@ -1,8 +1,12 @@
 import { Card, Row, Col, Button } from "react-bootstrap";
+import { useState } from "react";
 import { useAuth } from "../contexts/AuthContexts";
+import { useHistory } from "react-router-dom";
+import { db } from "../firebase";
 
-const GameDashboard = () => {
+const PlayerDashboard = () => {
     const { currentUser } = useAuth();
+
     return (
         <div className="w-100">
             <Row className="mb-4">
@@ -20,7 +24,7 @@ const GameDashboard = () => {
                     <Card className="content-card shadow">
                         <Card.Body>
                             <div className="d-flex justify-content-end w-100">
-                                <Button variant="outline-primary" className="w-100"><i className="fas fa-plus"></i> Create Game</Button>
+                                <CreateMatch />
                             </div>
                         </Card.Body>
                     </Card>
@@ -46,4 +50,36 @@ const GameDashboard = () => {
     );
 }
 
-export default GameDashboard;
+// Button that creates matches
+const CreateMatch = () => {
+    const history = useHistory();
+    const [loading, setLoading] = useState(false);
+
+    const handleClick = async () => {
+        setLoading(true);
+
+        // Create a document representing the new match
+        const newMatchDoc = await db.collection("active-matches").add({
+            playerOne: "none",
+            playerTwo: "none",
+            gameState: "waiting",
+            playerOneMove: "none",
+            playerTwoMove: "none",
+            playerOneScore: 0,
+            playerTwoScore: 0
+        });
+
+        // Redirect to new match once promise has been fulfilled
+        setLoading(false);
+        history.push(`/game/${newMatchDoc.id}`);
+        console.log("here");
+    }
+
+    return (
+        <Button variant="outline-primary" className="w-100" onClick={handleClick} disabled={loading}>
+            <i className="fas fa-plus"></i> Create Match
+        </Button>
+    );
+}
+
+export default PlayerDashboard;

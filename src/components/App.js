@@ -1,10 +1,13 @@
 import React from "react";
 import PageHeader from "./PageHeader";
 import MainPageContentDisplay from "./MainPageContentDisplay";
+import GameDisplay from "./GameDisplay";
+import ProtectedRoute from "./ProtectedRoute";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Login, SignUp } from "./AuthComponents";
 import { Container } from "react-bootstrap";
 import { AuthProvider } from "../contexts/AuthContexts";
+
 
 class App extends React.Component {
     render() {
@@ -19,6 +22,7 @@ class App extends React.Component {
                             <Route path="/" exact component={MainPageContentDisplay} />
                             <Route path="/login" component={Login} />
                             <Route path="/signup" component={SignUp} />
+                            <ProtectedRoute path="/game/:gameId" component={GameDisplay} />
                         </Switch>
                     </Container>
                 </Router>
