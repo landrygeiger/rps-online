@@ -2,9 +2,11 @@
 
 # dependencies
 /node_modules
+/server/node_modules
 /.pnp
 .pnp.js
 config.js
+/server/rock-paper-scissors-onli-dc6c4-firebase-adminsdk-4s6ib-bad26d3578.json
 
 # testing
 /coverage

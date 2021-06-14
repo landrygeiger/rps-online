@@ -1,14 +1,16 @@
-import { Card, Row, Col, Button } from "react-bootstrap";
+import { Card, Row, Col, Button, Alert } from "react-bootstrap";
 import { useState } from "react";
-import { useAuth } from "../contexts/AuthContexts";
+import { useAuth } from "../contexts/AuthContext";
 import { useHistory } from "react-router-dom";
-import { db } from "../firebase";
+import { useSocketContext } from "../contexts/SocketContext";
 
 const PlayerDashboard = () => {
     const { currentUser } = useAuth();
+    const [error, setError] = useState("");
 
     return (
         <div className="w-100">
+            { error && <Alert variant="danger" className="shadow">{error}</Alert> }
             <Row className="mb-4">
                 <Col xs={9}>
                     <Card className="content-card shadow">
@@ -24,7 +26,7 @@ const PlayerDashboard = () => {
                     <Card className="content-card shadow">
                         <Card.Body>
                             <div className="d-flex justify-content-end w-100">
-                                <CreateMatch />
+                                <CreateMatch setError={setError}/>
                             </div>
                         </Card.Body>
                     </Card>
@@ -51,33 +53,36 @@ const PlayerDashboard = () => {
 }
 
 // Button that creates matches
-const CreateMatch = () => {
+const CreateMatch = (props) => {
     const history = useHistory();
     const [loading, setLoading] = useState(false);
+    const { connect, connected, socket } = useSocketContext();
 
     const handleClick = async () => {
         setLoading(true);
+        if (!connected) connect().then((socket) => {
+                createMatchRequest(socket);
+            }, () => {
+                props.setError("Failed to connect to server.");
+                setLoading(false);
+            });
+        else {
+            createMatchRequest(socket);
+        }
+    }
 
-        // Create a document representing the new match
-        const newMatchDoc = await db.collection("active-matches").add({
-            playerOne: "none",
-            playerTwo: "none",
-            gameState: "waiting",
-            playerOneMove: "none",
-            playerTwoMove: "none",
-            playerOneScore: 0,
-            playerTwoScore: 0
+    const createMatchRequest = (socket) => {
+        // When the server creates a match, it will remotely invoke the given callback and
+        // pass in the created match's id
+        socket.emit("create-match", (matchId) => {
+            history.push(`/game/${matchId}`);
         });
-
-        // Redirect to new match once promise has been fulfilled
         setLoading(false);
-        history.push(`/game/${newMatchDoc.id}`);
-        console.log("here");
     }
 
     return (
         <Button variant="outline-primary" className="w-100" onClick={handleClick} disabled={loading}>
-            <i className="fas fa-plus"></i> Create Match
+            <i className="fas fa-plus" /> Create Match
         </Button>
     );
 }

@@ -1,5 +1,5 @@
 import { Route, Redirect } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContexts";
+import { useAuth } from "../contexts/AuthContext";
 
 const ProtectedRoute = ({ ...props }) => {
     const { currentUser } = useAuth();

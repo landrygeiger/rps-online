@@ -6,7 +6,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Login, SignUp } from "./AuthComponents";
 import { Container } from "react-bootstrap";
-import { AuthProvider } from "../contexts/AuthContexts";
+import { AuthProvider } from "../contexts/AuthContext";
+import { SocketProvider } from "../contexts/SocketContext";
 
 
 class App extends React.Component {
@@ -19,10 +20,13 @@ class App extends React.Component {
                                 style={{ minHeight: "calc(100vh - 225px", margin:"50px auto"}}>
                                 { /* 125px for header, 100px for margin*/ }
                         <Switch>
-                            <Route path="/" exact component={MainPageContentDisplay} />
-                            <Route path="/login" component={Login} />
-                            <Route path="/signup" component={SignUp} />
-                            <ProtectedRoute path="/game/:gameId" component={GameDisplay} />
+                            <SocketProvider>
+                                <Route path="/" exact component={MainPageContentDisplay} />
+                                <Route path="/login" component={Login} />
+                                <Route path="/signup" component={SignUp} />
+                            
+                                <ProtectedRoute path="/game/:gameId" component={GameDisplay} />
+                            </SocketProvider>
                         </Switch>
                     </Container>
                 </Router>

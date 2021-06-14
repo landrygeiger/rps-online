@@ -1,7 +1,7 @@
 import { Link, useHistory } from "react-router-dom";
 import { useState } from "react";
 import { Button, Container, Alert } from "react-bootstrap";
-import { useAuth } from "../contexts/AuthContexts";
+import { useAuth } from "../contexts/AuthContext";
 
 // Styling for inner header container (keeps header items within an area of 1200px )
 const innerStyle = {
