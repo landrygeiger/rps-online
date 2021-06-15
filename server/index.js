@@ -24,7 +24,10 @@ io.on("connection", socket => {
         // Create a new document in database
         const docRef = db.collection("active-matches").doc();
         docRef.set({
-            status: "waiting-for-players",
+            status: {
+                state: "waiting-for-players",
+                data: {}
+            },
             player1: "Waiting...",
             player2: "Waiting...",
             player1Score: 0,
@@ -60,12 +63,8 @@ io.on("connection", socket => {
                         console.log(`User ${socket.id} (${user.email}) admitted into match ${matchId} as player 2.`);
                         
                         // Start match if both players have joined
-                        if (matchData.status === "waiting-for-players") {
-                            docRef.update({ status: "in-progress"}).then(() => {
-                                docRef.get().then((freshDoc) => {
-                                    startMatch(io, matchId, freshDoc.data());
-                                })
-                            });
+                        if (matchData.status.state === "waiting-for-players") {
+                            startMatch(io, matchId, docRef);
                         }
 
                         socket.join(matchId);
@@ -83,6 +82,7 @@ io.on("connection", socket => {
     });
 
     socket.on("send-move", (user, matchId, move) => {
-        sendMove(matchId, move);
+        console.log(`Received move ${move} from user ${socket.id} (${user.email}) in match ${matchId}`);
+        sendMove(user, matchId, move);
     })
 });

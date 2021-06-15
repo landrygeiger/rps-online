@@ -32,10 +32,6 @@ export const SocketProvider = ({ children }) => {
             socket.on("disconnect", () => {
                 setConnected(false);
             });
-
-            socket.on("test-event", (message) => {
-                console.log(message);
-            })
         });
     }
 

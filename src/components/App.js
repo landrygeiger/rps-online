@@ -1,7 +1,7 @@
 import React from "react";
 import PageHeader from "./PageHeader";
 import MainPageContentDisplay from "./MainPageContentDisplay";
-import GameDisplay from "./GameDisplay";
+import GameDisplay from "./game/GameDisplay";
 import ProtectedRoute from "./ProtectedRoute";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Login, SignUp } from "./AuthComponents";
