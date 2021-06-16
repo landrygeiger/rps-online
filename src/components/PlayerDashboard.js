@@ -75,9 +75,9 @@ const CreateMatch = (props) => {
         // When the server creates a match, it will remotely invoke the given callback and
         // pass in the created match's id
         socket.emit("create-match", (matchId) => {
+            setLoading(false);
             history.push(`/game/${matchId}`);
         });
-        setLoading(false);
     }
 
     return (

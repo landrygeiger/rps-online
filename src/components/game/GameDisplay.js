@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Card } from "react-bootstrap";
+import { useEffect, useRef, useState } from "react";
+import { Card, InputGroup, FormControl, Button } from "react-bootstrap";
 import { useParams, useHistory } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useSocketContext } from "../../contexts/SocketContext";
@@ -8,7 +8,7 @@ import Loader from "../Loader";
 import Scoreboard from "./Scoreboard";
 import GameButtons from "./GameButtons";
 import Countdown from "./Countdown";
-import BetweenRoundsDisplay from "./BetweenRoundsDisplay";
+import GameCompleteDisplay from "./GameCompleteDisplay";
 
 const GameDisplay = () => {
     const { gameId } = useParams();
@@ -19,40 +19,46 @@ const GameDisplay = () => {
     const [matchData, setMatchData] = useState();
     const [matchStatus, setMatchStatus] = useState("waiting-for-players");
     const history = useHistory();
+    const copyRef = useRef();
 
     useEffect(() => {
-        joinGame();
+        const asyncWrapper = async () => {
+            const unsub = await joinGame();
+            return unsub;
+        }
+        return asyncWrapper();
     }, []);
 
     const joinGame = async () => {
-        // Context state updates asynchronously so connect() doesn't update the socket variable in time
-        // Hacky fix, there's probably a better way
-        let connectedSocket = socket;
-        if (!connected) connectedSocket = await connect();
-        // Create a match join request, server remotely invokes callback telling the client
-        // if the request was accepted or denied
-        connectedSocket.emit("join-match", currentUser, gameId, (admitted) => {
-            if (admitted) {
-                // Listen to the match doc for updates and reflect those in the local match data
-                // First call just returns the document, so also set loading to false
-                db.collection("active-matches").doc(gameId).onSnapshot((doc) => {
-                    setMatchData(doc.data());
-                    setMatchStatus(doc.data().status);
-                    setLoading(false);
-                });
-            } else {
-                history.push("/");
-            }
-        });
+        return new Promise(async (resolve, reject) => {
 
-        /* connectedSocket.on("start-match", () => {
-            setMatchStatus("starting");
-            console.log("starting now!");
-        }) */
+            // Context state updates asynchronously so connect() doesn't update the socket variable in time
+            // Hacky fix, there's probably a better way
+            let connectedSocket = socket;
+            if (!connected) connectedSocket = await connect();
+            // Create a match join request, server remotely invokes callback telling the client
+            // if the request was accepted or denied
+            connectedSocket.emit("join-match", currentUser, gameId, (admitted) => {
+                if (admitted) {
+                    // Listen to the match doc for updates and reflect those in the local match data
+                    // First call just returns the document, so also set loading to false
+                    const unsub = db.collection("active-matches").doc(gameId).onSnapshot((doc) => {
+                        setMatchData(doc.data());
+                        setMatchStatus(doc.data().status);
+                        setLoading(false);
+                    });
+                    resolve(unsub);
+                } else {
+                    history.push("/");
+                }
+            });            
+        })
     }
 
-    const handleClick = () => {
-        socket.emit("send-move", currentUser, gameId, "scissors");
+    const handleCopy = () => {
+        copyRef.current.select();
+        copyRef.current.setSelectionRange(0, 99999); // mobile
+        document.execCommand("copy");
     }
 
     return (
@@ -61,18 +67,25 @@ const GameDisplay = () => {
                 { !loading 
                 ? <>
                     <Scoreboard matchData={matchData} />
-                    <button onClick={handleClick}>Test</button>
-                    <div className= "d-flex justify-content-center align-items-center" style={{height: "520px"}}>
-                        { matchStatus.state === "waiting-for-players" ? <p>Waiting for players...</p>
-                        : matchStatus.state === "starting" ? <Countdown count={matchStatus.data.count} />
-                        : matchStatus.state === "in-progress" ? <>
-                            <GameButtons disabled={disabled} socket={socket} gameId={gameId} currentUser={currentUser} disableButtons={disableButtons} />
+                    <div className= "d-flex justify-content-center align-items-center flex-column" style={{height: "520px"}}>
+                        { matchStatus.state === "waiting-for-players" ? <>
+                                <p>Waiting for players...</p>
+                                <InputGroup style={{width: "450px"}}>
+                                    <FormControl value={window.location.href} readOnly ref={copyRef} />
+                                    <Button variant="primary" onClick={handleCopy}><i className="fas fa-clipboard" /></Button>
+                                </InputGroup>
+                            </>
+                        : matchStatus.state === "starting" ? <>
+                                <p>Match starting in...</p>
+                                <Countdown count={matchStatus.data.count} />
+                            </>
+                        : matchStatus.state === "in-progress" || matchStatus.state === "between-rounds" ? <>
+                            <GameButtons disabled={disabled} socket={socket} gameId={gameId} currentUser={currentUser} 
+                                disableButtons={disableButtons} matchStatus={matchStatus} />
                             <Countdown count={matchStatus.data.count} />
                         </> 
-                        : <>
-                            <BetweenRoundsDisplay />
-                            <Countdown count={matchStatus.data.count} />
-                        </> }
+                        : matchStatus.state === "complete" ? <GameCompleteDisplay matchStatus={matchStatus} />
+                        : <div>uh oh</div> }
                     </div>
                 </> 
                 : <Loader /> }

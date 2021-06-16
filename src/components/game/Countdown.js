@@ -1,8 +1,9 @@
+import AnimatedNumber from "react-animated-numbers";
 
 const Countdown = (props) => {
 
     return (
-        <h2 style={{textAlign: "center", fontSize: "80px"}}>{props.count}</h2>
+        <AnimatedNumber animateToNumber={props.count} />
     );
 }
 

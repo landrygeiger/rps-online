@@ -1,18 +1,54 @@
+import { useEffect, useState } from "react";
 
 const GameButtons = (props) => {
+    const [colored, setColored] = useState({buttonId: "none", shade: "#696969"});
+    const [selected, setSelected] = useState("none");
 
-    const handleClick = e => {
-        console.log(e.target.id);
-        props.socket.emit("send-move", props.currentUser, props.gameId, e.target.id);
-        // document.getElementById(e.target.id).style.backgroundColor = "#0275d8";
-    } 
+    useEffect(() => {
+        const status = props.matchStatus;
+
+        if (status.state === "between-rounds") {
+            setColored({
+                buttonId: selected,
+                shade: status.data.winner === props.currentUser.email ? "green" : status.data.winner === "tie" ? "yellow" : "red"
+            })
+        } else if (status.state === "in-progress") {
+            setColored({
+                buttonId: selected,
+                shade: "#0275d8"
+            })
+        }
+    }, [selected, props.matchStatus]);
+
+    useEffect(() => {
+        if (props.matchStatus.state === "in-progress") {
+            props.disableButtons(false);
+            setSelected("none")
+        }
+    }, [props.matchStatus.state])
+
+    const handleClick = (move) => {
+        props.socket.emit("send-move", props.currentUser, props.gameId, move);
+        props.disableButtons(true);
+        setSelected(move);
+    }
 
     return (
-        <>
-            <button className="game-button" id="rock" disabled={props.disabled} onClick={handleClick}><i className="far fa-hand-rock" /></button>
-            <button className="game-button" id="paper" disabled={props.disabled} onClick={handleClick}><i className="far fa-hand-paper" /></button>
-            <button className="game-button" id="scissors" disabled={props.disabled} onClick={handleClick}><i className="far fa-hand-scissors" /></button>
-        </>
+        <div className="d-flex justify-content-center">
+            <Button disabled={props.disabled} handleClick={handleClick} buttonId={"rock"} colored={colored} />
+            <Button disabled={props.disabled} handleClick={handleClick} buttonId={"paper"} colored={colored} />
+            <Button disabled={props.disabled} handleClick={handleClick} buttonId={"scissors"} colored={colored} />
+        </div>
+    )
+}
+
+const Button = (props) => {
+    const bgStyle = {
+        backgroundColor: props.colored.buttonId === props.buttonId ? props.colored.shade : "#696969"
+    }
+
+    return (
+        <button className="game-button" style={bgStyle} id={props.buttonId} disabled={props.disabled} onClick={() => props.handleClick(props.buttonId)}><i className={`far fa-hand-${props.buttonId}`} /></button>
     )
 }
 

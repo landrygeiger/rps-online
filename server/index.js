@@ -84,5 +84,5 @@ io.on("connection", socket => {
     socket.on("send-move", (user, matchId, move) => {
         console.log(`Received move ${move} from user ${socket.id} (${user.email}) in match ${matchId}`);
         sendMove(user, matchId, move);
-    })
+    });
 });

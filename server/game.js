@@ -35,7 +35,7 @@ const startMatch = async (io, matchId, docRef) => {
     await countdown(5, docRef, matchObj, "status.data.count");
 
     // Main game loop
-    while (matchObj.player1Score < 3 || matchObj.player2Score < 3) {
+    while (matchObj.player1Score < 3 && matchObj.player2Score < 3) {
         await docRef.update({
             status: {
                 state: "in-progress",
@@ -52,6 +52,8 @@ const startMatch = async (io, matchId, docRef) => {
         const p1m = matchObj.player1Move;
         const p2m = matchObj.player2Move;
 
+        let winner = "none";
+
         // Player 1 scores a point
         if (p1m !== "none"
             && ((p1m === "rock" && p2m === "scissors")
@@ -60,6 +62,7 @@ const startMatch = async (io, matchId, docRef) => {
                 || (p2m === "none")
                 )
             ) {
+            winner = "player1";
             matchObj.player1Score++;
             docRef.update({
                 player1Score: firebase.firestore.FieldValue.increment(1)
@@ -72,13 +75,17 @@ const startMatch = async (io, matchId, docRef) => {
                 || (p1m === "none")
                 )
             ) {
+            winner = "player2";
             matchObj.player2Score++;
             docRef.update({
                 player2Score: firebase.firestore.FieldValue.increment(1)
             });
+        // Tie
+        } else if (p1m === p2m && p1m !== "none" && p2m !== "none") {
+            winner = "tie";
         // Nobody responded - end game
         } else {
-            console.log("Ending match...");
+            console.log(`Ending match ${matchId}`);
             break;
         }
         
@@ -89,18 +96,19 @@ const startMatch = async (io, matchId, docRef) => {
             status: {
                 state: "between-rounds",
                 data : {
-                    count: 5
+                    count: 3,
+                    winner: winner !== "tie" ? matchObj[winner] : "tie"
                 }
             }
         });
-        await countdown(5, docRef, matchObj, "status.data.count");
+        await countdown(3, docRef, matchObj, "status.data.count");
     }
 
     await docRef.update({
         status: {
             state: "complete",
             data : {
-                count: 5
+                winner: matchObj.player1Score > matchObj.player2Score ? matchObj.player1 : matchObj.player1Score !== matchObj.player2Score ? matchObj.player2 : "Nobody"
             }
         }
     });
