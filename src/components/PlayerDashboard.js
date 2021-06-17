@@ -11,8 +11,8 @@ const PlayerDashboard = () => {
     return (
         <div className="w-100">
             { error && <Alert variant="danger" className="shadow">{error}</Alert> }
-            <Row className="mb-4">
-                <Col xs={9}>
+            <Row>
+                <Col md={9} className="mb-3">
                     <Card className="content-card shadow">
                         <Card.Body>
                         <div className="d-flex justify-content-between align-items-center">
@@ -22,7 +22,7 @@ const PlayerDashboard = () => {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col>
+                <Col className="mb-3">
                     <Card className="content-card shadow">
                         <Card.Body>
                             <div className="d-flex justify-content-end w-100">
@@ -33,14 +33,14 @@ const PlayerDashboard = () => {
                 </Col>
             </Row>
             <Row className="h-100">
-                <Col xs={3} className="h-100">
+                <Col md={3} className="h-100 mb-3">
                     <Card className="content-card shadow" style={{height: "500px"}}>
                         <Card.Body>
                             <h4>Statistics <i className="fas fa-chart-pie"></i></h4>
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col>
+                <Col className="mb-3">
                     <Card className="content-card shadow" style={{height: "500px"}}>
                         <Card.Body>
                             <h4>Match History <i className="fas fa-history"></i></h4>

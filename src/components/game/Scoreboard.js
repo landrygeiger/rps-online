@@ -4,8 +4,8 @@ const Scoreboard = (props) => {
     return (
         <>
             <div className="d-flex justify-content-between mb-2">
-                <h2>{props.matchData.player1}</h2>
-                <h2>{props.matchData.player2}</h2>
+                <p className="player-title">{props.matchData.player1}</p>
+                <p className="player-title">{props.matchData.player2}</p>
             </div>
             <div className="d-flex justify-content-between">
                 <div className="d-flex">

@@ -40,3 +40,28 @@
 .game-button:hover {
     background-color: #545454;
 }
+
+.player-title {
+    font-size: 25px;
+}
+
+@media (max-width: 768px) {
+    .player-title {
+        font-size: 17px;
+    }
+}
+
+.game-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .game-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+}

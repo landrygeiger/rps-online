@@ -17,7 +17,7 @@ export const SignUp = () => {
         e.preventDefault();
 
         if(passwordRef.current.value !== confirmPasswordRef.current.value) {
-            return setError("Passwords do no match");
+            return setError("Passwords do not match.");
         }
 
         try {
@@ -26,7 +26,7 @@ export const SignUp = () => {
             await signup(emailRef.current.value, passwordRef.current.value);
             history.push("/");
         } catch {
-            setError("Failed to create account");
+            setError("Failed to create account.");
         }
 
         setLoading(false);
@@ -78,7 +78,7 @@ export const Login = () => {
             await login(emailRef.current.value, passwordRef.current.value);
             history.push("/");
         } catch {
-            setError("Failed to login");
+            setError("Failed to login.");
         }
 
         setLoading(false);

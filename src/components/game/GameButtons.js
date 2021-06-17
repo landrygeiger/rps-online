@@ -34,7 +34,7 @@ const GameButtons = (props) => {
     }
 
     return (
-        <div className="d-flex justify-content-center">
+        <div className="game-buttons">
             <Button disabled={props.disabled} handleClick={handleClick} buttonId={"rock"} colored={colored} />
             <Button disabled={props.disabled} handleClick={handleClick} buttonId={"paper"} colored={colored} />
             <Button disabled={props.disabled} handleClick={handleClick} buttonId={"scissors"} colored={colored} />

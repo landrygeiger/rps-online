@@ -62,12 +62,12 @@ const GameDisplay = () => {
     }
 
     return (
-        <Card className="w-100 content-card shadow" style={{height: "calc(100vh - 225px"}}>
-            <Card.Body>
+        <Card className="w-100 content-card shadow mb-5">
+            <Card.Body className="d-flex flex-column" style={{minHeight: "500px", boxSizing: "border-box"}}>
                 { !loading 
                 ? <>
                     <Scoreboard matchData={matchData} />
-                    <div className= "d-flex justify-content-center align-items-center flex-column" style={{height: "520px"}}>
+                    <div className= "d-flex justify-content-center align-items-center flex-column" style={{flexGrow: 1}}>
                         { matchStatus.state === "waiting-for-players" ? <>
                                 <p>Waiting for players...</p>
                                 <InputGroup style={{width: "450px"}}>
