@@ -10,7 +10,7 @@ const GameButtons = (props) => {
         if (status.state === "between-rounds") {
             setColored({
                 buttonId: selected,
-                shade: status.data.winner === props.currentUser.email ? "green" : status.data.winner === "tie" ? "yellow" : "red"
+                shade: status.data.winner === props.currentUser.username ? "green" : status.data.winner === "tie" ? "yellow" : "red"
             })
         } else if (status.state === "in-progress") {
             setColored({
@@ -28,7 +28,7 @@ const GameButtons = (props) => {
     }, [props.matchStatus.state])
 
     const handleClick = (move) => {
-        props.socket.emit("send-move", props.currentUser, props.gameId, move);
+        props.socket.emit("send-move", props.currentUser.username, props.gameId, move);
         props.disableButtons(true);
         setSelected(move);
     }

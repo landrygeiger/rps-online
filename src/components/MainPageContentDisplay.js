@@ -1,6 +1,6 @@
 import { Card } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
-import PlayerDashboard from "./PlayerDashboard";
+import PlayerDashboard from "./dashboard/PlayerDashboard";
 
 // Displays all of the "content" for the landing page
 const MainPageContentDisplay = () => {

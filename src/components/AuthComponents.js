@@ -2,11 +2,13 @@ import { Form, Button, Card, Alert } from "react-bootstrap";
 import { useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { db } from "../firebase";
 
 export const SignUp = () => {
     const emailRef = useRef();
     const passwordRef = useRef();
     const confirmPasswordRef = useRef();
+    const usernameRef = useRef();
     const { signup } = useAuth();
     const history = useHistory();
 
@@ -20,10 +22,14 @@ export const SignUp = () => {
             return setError("Passwords do not match.");
         }
 
+        if (usernameRef.current.value.length > 16) {
+            return setError("Username must be 16 characters or less.");
+        }
+
         try {
             setError("");
             setLoading(true);
-            await signup(emailRef.current.value, passwordRef.current.value);
+            await signup(emailRef.current.value, usernameRef.current.value, passwordRef.current.value);
             history.push("/");
         } catch {
             setError("Failed to create account.");
@@ -33,22 +39,26 @@ export const SignUp = () => {
     }
 
     return (
-        <Card className="shadow content-card card-2">
+        <Card className="shadow content-card card-2 mb-3">
             <Card.Body>
-                <h2 className="text-center mb-4">Sign Up</h2>
+                <p className="text-center mb-4 text-title">Sign Up</p>
                 {error && <Alert variant="danger">{error}</Alert>}
                 <Form className="mb-4" onSubmit={handleSubmit}>
+                    <Form.Group id="username" className="mb-2">
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control type="text" ref={usernameRef} required/>
+                    </Form.Group>
                     <Form.Group id="email" className="mb-2">
                         <Form.Label>Email</Form.Label>
-                        <Form.Control type="email" ref={emailRef} required />
+                        <Form.Control type="email" ref={emailRef} required/>
                     </Form.Group>
                     <Form.Group id="password" className="mb-2">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" ref={passwordRef} required />
+                        <Form.Control type="password" ref={passwordRef} required/>
                     </Form.Group>
                     <Form.Group id="confirm-password" className="mb-4">
                         <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control type="password" ref={confirmPasswordRef} required />
+                        <Form.Control type="password" ref={confirmPasswordRef} required/>
                     </Form.Group>
                     <Button disabled={loading} type="submit" className="w-100"><i className="far fa-edit"></i> Sign Up</Button>
                 </Form>
@@ -87,7 +97,7 @@ export const Login = () => {
     return (
         <Card className="shadow content-card card-2">
             <Card.Body>
-                <h2 className="mb-2 text-center">Login</h2>
+                <p className="mb-2 text-center text-title">Login</p>
                 {error && <Alert variant="danger">{error}</Alert>}
                 <Form>
                     <Form.Group id="email" className="mb-2">

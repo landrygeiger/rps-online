@@ -30,7 +30,7 @@ const PageHeader = () => {
         <Navbar bg="light" expand="md" style={{maxWidth: "1500px", borderRadius: "0 0 15px 15px"}} className="mx-auto shadow px-5">
             <Navbar.Brand style={{minHeight: "100px"}} className="d-flex align-items-center">
                 <Link to="/" style={{textDecoration: "none", color: "black"}}>
-                    <h2><i className="fas fa-signal" style={{color: "#0275d8"}} /> Rock Paper Scissors Online</h2>
+                    <p className="text-title"><i className="fas fa-signal" style={{color: "#0275d8", fontSize: 17}} /> Rock Paper Scissors Online</p>
                 </Link>
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="navbar-nav" />
@@ -93,7 +93,7 @@ const SignOutAndProfileInputs = () => {
     return (
         <div className="d-flex align-items-center">
             {error && <Alert variant="danger">{error}</Alert>}
-            <p className="mx-3 my-auto"><i className="fas fa-user" /> {currentUser.email}</p>
+            <p className="mx-3 my-auto">{currentUser.username}</p>
             <Button disabled={loading} variant="outline-primary" onClick={handleSignout}>Sign Out</Button>
         </div>
     );

@@ -41,6 +41,11 @@
     background-color: #545454;
 }
 
+.text-title {
+    margin: auto 0px;
+    font-size: 21px;
+}
+
 .player-title {
     font-size: 25px;
 }

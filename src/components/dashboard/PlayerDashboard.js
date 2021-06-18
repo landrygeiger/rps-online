@@ -1,8 +1,10 @@
 import { Card, Row, Col, Button, Alert } from "react-bootstrap";
 import { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { useHistory } from "react-router-dom";
-import { useSocketContext } from "../contexts/SocketContext";
+import { useSocketContext } from "../../contexts/SocketContext";
+import AnimatedNumber from "react-animated-numbers";
+import PlayedMatchList from "./PlayedMatchList";
 
 const PlayerDashboard = () => {
     const { currentUser } = useAuth();
@@ -16,8 +18,8 @@ const PlayerDashboard = () => {
                     <Card className="content-card shadow">
                         <Card.Body>
                         <div className="d-flex justify-content-between align-items-center">
-                            <h3>{currentUser.email}</h3>
-                            <h4>1783 <i className="fas fa-trophy"></i></h4>
+                            <p className="text-title">{currentUser.username}</p>
+                            <div className="d-flex align-items-center text-title"><AnimatedNumber animateToNumber={1000}/> <i className="fas fa-trophy mx-1" style={{fontSize: 16}}></i></div>
                         </div>
                         </Card.Body>
                     </Card>
@@ -36,14 +38,15 @@ const PlayerDashboard = () => {
                 <Col md={3} className="h-100 mb-3">
                     <Card className="content-card shadow" style={{height: "500px"}}>
                         <Card.Body>
-                            <h4>Statistics <i className="fas fa-chart-pie"></i></h4>
+                            <p className="text-title">Statistics <i className="fas fa-chart-pie" style={{fontSize: 16}}></i></p>
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col className="mb-3">
                     <Card className="content-card shadow" style={{height: "500px"}}>
                         <Card.Body>
-                            <h4>Match History <i className="fas fa-history"></i></h4>
+                            <p className="text-title">Match History <i className="fas fa-history" style={{fontSize: 16}}></i></p>
+                            <PlayedMatchList />
                         </Card.Body>
                     </Card>
                 </Col>

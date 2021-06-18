@@ -24,7 +24,10 @@ const GameDisplay = () => {
     useEffect(() => {
         const asyncWrapper = async () => {
             const unsub = await joinGame();
-            return unsub;
+            return () => {
+                unsub();
+                socket.emit("leave-match", gameId);
+            }
         }
         return asyncWrapper();
     }, []);
@@ -47,11 +50,15 @@ const GameDisplay = () => {
                         setMatchStatus(doc.data().status);
                         setLoading(false);
                     });
+                    connectedSocket.on("kick-match", () => {
+                        unsub();
+                        history.push("/");
+                    });
                     resolve(unsub);
                 } else {
                     history.push("/");
                 }
-            });            
+            });        
         })
     }
 
@@ -80,11 +87,14 @@ const GameDisplay = () => {
                                 <Countdown count={matchStatus.data.count} />
                             </>
                         : matchStatus.state === "in-progress" || matchStatus.state === "between-rounds" ? <>
-                            <GameButtons disabled={disabled} socket={socket} gameId={gameId} currentUser={currentUser} 
-                                disableButtons={disableButtons} matchStatus={matchStatus} />
-                            <Countdown count={matchStatus.data.count} />
-                        </> 
-                        : matchStatus.state === "complete" ? <GameCompleteDisplay matchStatus={matchStatus} />
+                                <GameButtons disabled={disabled} socket={socket} gameId={gameId} currentUser={currentUser} 
+                                    disableButtons={disableButtons} matchStatus={matchStatus} />
+                                <Countdown count={matchStatus.data.count} />
+                            </> 
+                        : matchStatus.state === "complete" ? <>
+                                <GameCompleteDisplay matchStatus={matchStatus} />
+                                <Countdown count={matchStatus.data.count} />
+                            </>
                         : <div>uh oh</div> }
                     </div>
                 </> 
