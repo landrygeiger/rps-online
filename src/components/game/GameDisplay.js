@@ -77,7 +77,7 @@ const GameDisplay = () => {
                     <div className= "d-flex justify-content-center align-items-center flex-column" style={{flexGrow: 1}}>
                         { matchStatus.state === "waiting-for-players" ? <>
                                 <p>Waiting for players...</p>
-                                <InputGroup style={{width: "450px"}}>
+                                <InputGroup style={{maxWidth: "450px"}}>
                                     <FormControl value={window.location.href} readOnly ref={copyRef} />
                                     <Button variant="primary" onClick={handleCopy}><i className="fas fa-clipboard" /></Button>
                                 </InputGroup>

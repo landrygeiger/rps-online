@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
             ranking: 1000,
             xp: 0,
             matchesPlayed: []
-        })
+        });
     }
 
     const login = (email, password) => {
@@ -32,9 +32,14 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(async user => {
-            if (user) {
-                const userDoc = await db.collection("users").doc(user.uid).get();
-                user.username = userDoc.data().username;
+            try {
+                if (user) {
+                    const userDoc = await db.collection("users").doc(user.uid).get();
+                    user.username = userDoc.data().username;
+                }
+
+            } catch {
+                console.error("oops");
             }
             setCurrentUser(user);
             setLoading(false);

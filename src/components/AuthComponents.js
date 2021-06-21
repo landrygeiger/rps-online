@@ -1,6 +1,6 @@
 import { Form, Button, Card, Alert } from "react-bootstrap";
-import { useRef, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
 
@@ -14,6 +14,7 @@ export const SignUp = () => {
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [redirect, setRedirect] = useState(useLocation().state?.redirect ?? "/");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,7 +31,7 @@ export const SignUp = () => {
             setError("");
             setLoading(true);
             await signup(emailRef.current.value, usernameRef.current.value, passwordRef.current.value);
-            history.push("/");
+            history.push(redirect);
         } catch {
             setError("Failed to create account.");
         }
@@ -63,7 +64,7 @@ export const SignUp = () => {
                     <Button disabled={loading} type="submit" className="w-100"><i className="far fa-edit"></i> Sign Up</Button>
                 </Form>
                 <div className="text-center mt-4">
-                    <p>Already have an account? <Link to="/login">Log in</Link></p>
+                    <p>Already have an account? <Link to={{pathname: "/login", state: { redirect }}}>Log in</Link></p>
                 </div>
             </Card.Body>
         </Card>
@@ -78,6 +79,8 @@ export const Login = () => {
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [redirect, setRedirect] = useState(useLocation().state?.redirect ?? "/");
+    // useLocation().state?.redirect ?? "/"
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -86,7 +89,7 @@ export const Login = () => {
             setError("");
             setLoading(true);
             await login(emailRef.current.value, passwordRef.current.value);
-            history.push("/");
+            history.push(redirect);
         } catch {
             setError("Failed to login.");
         }
@@ -111,7 +114,7 @@ export const Login = () => {
                     <Button disabled={loading} type="submit" className="w-100 mt-4" onClick={handleSubmit}>Login</Button>
                 </Form>
                 <div className="mt-4 text-center">
-                    <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
+                    <p>Don't have an account? <Link to={{pathname: "/signup", state: { redirect }}}>Sign up</Link></p>
                 </div>
             </Card.Body>
         </Card>

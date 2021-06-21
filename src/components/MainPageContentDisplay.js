@@ -7,7 +7,7 @@ const MainPageContentDisplay = () => {
     const { currentUser } = useAuth();
     return (
         // If user is logged in, return GameDashboard, else return the main page content
-        <div className="w-100 h-100">{ currentUser ? <PlayerDashboard /> : <MainPageContent /> }</div>
+        <div className="w-100 h-100">{ currentUser ? <PlayerDashboard uid={currentUser.uid} /> : <MainPageContent /> }</div>
         
     );
 }

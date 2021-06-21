@@ -1,14 +1,27 @@
 import { Card, Row, Col, Button, Alert } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useHistory } from "react-router-dom";
 import { useSocketContext } from "../../contexts/SocketContext";
+import { db } from "../../firebase";
 import AnimatedNumber from "react-animated-numbers";
 import PlayedMatchList from "./PlayedMatchList";
+import Loader from "../Loader";
 
-const PlayerDashboard = () => {
+const PlayerDashboard = (props) => {
     const { currentUser } = useAuth();
     const [error, setError] = useState("");
+    const [userData, setUserData] = useState({});
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const userDoc = await db.collection("users").doc(props.uid).get();
+            setUserData(userDoc.data());
+            setLoading(false);
+        }
+        fetchData();
+    }, []);
 
     return (
         <div className="w-100">
@@ -19,7 +32,7 @@ const PlayerDashboard = () => {
                         <Card.Body>
                         <div className="d-flex justify-content-between align-items-center">
                             <p className="text-title">{currentUser.username}</p>
-                            <div className="d-flex align-items-center text-title"><AnimatedNumber animateToNumber={1000}/> <i className="fas fa-trophy mx-1" style={{fontSize: 16}}></i></div>
+                            <div className="d-flex align-items-center text-title">{ loading ? "----" : <AnimatedNumber animateToNumber={userData.ranking}/>} <i className="fas fa-trophy mx-1" style={{fontSize: 16}}></i></div>
                         </div>
                         </Card.Body>
                     </Card>
@@ -46,7 +59,7 @@ const PlayerDashboard = () => {
                     <Card className="content-card shadow" style={{height: "500px"}}>
                         <Card.Body>
                             <p className="text-title">Match History <i className="fas fa-history" style={{fontSize: 16}}></i></p>
-                            <PlayedMatchList />
+                            { loading ? <Loader /> : <PlayedMatchList userData={userData}/> }
                         </Card.Body>
                     </Card>
                 </Col>

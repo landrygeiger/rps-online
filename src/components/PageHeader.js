@@ -1,4 +1,4 @@
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Button, Container, Alert, Navbar, Nav } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
@@ -33,7 +33,7 @@ const PageHeader = () => {
                     <p className="text-title"><i className="fas fa-signal" style={{color: "#0275d8", fontSize: 17}} /> Rock Paper Scissors Online</p>
                 </Link>
             </Navbar.Brand>
-            <Navbar.Toggle aria-controls="navbar-nav" />
+            <Navbar.Toggle aria-controls="navbar-nav" style={{border: "none"}} />
             <Navbar.Collapse id="navbar-nav">
                 <Nav className="d-flex justify-content-end w-100">
                     <div className="d-flex justify-content-end">
@@ -58,12 +58,14 @@ const PageHeader = () => {
 
 // Contains log in and sign up buttons
 const LoginAndSignUpInputs = () => {
+    const [redirect, setRedirect] = useState(useLocation().state?.redirect ?? "/");
+
     return (
         <>
-            <Link to="/login">
+            <Link to={{pathname: "/login", state: { redirect }}}>
                 <Button variant="primary"><i className="far fa-user"></i> Login</Button>
             </Link>
-            <Link to="/signup">
+            <Link to={{pathname: "/signup", state: { redirect }}}>
                 <Button variant="outline-primary" style={{marginLeft: "15px"}}><i className="far fa-edit"></i> Sign Up</Button>
             </Link>
         </>

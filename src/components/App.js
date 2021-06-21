@@ -22,8 +22,8 @@ class App extends React.Component {
                         <Switch>
                             <SocketProvider>
                                 <Route path="/" exact component={MainPageContentDisplay} />
-                                <Route path="/login" component={Login} />
-                                <Route path="/signup" component={SignUp} />
+                                <Route path="/login" component={Login} exact />
+                                <Route path="/signup" component={SignUp} exact />
                             
                                 <ProtectedRoute path="/game/:gameId" component={GameDisplay} />
                             </SocketProvider>
