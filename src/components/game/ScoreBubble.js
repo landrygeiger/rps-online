@@ -5,8 +5,8 @@ const ScoreBubble = (props) => {
         backgroundColor: filled ? "#0275d8" : "white",
         border: filled ? "none" : "2px solid gray",
         borderRadius: "50%",
-        width: "20px",
-        height: "20px",
+        width: props.small ? "15px" : "20px",
+        height: props.small ? "15px" : "20px",
         margin: "0 5px"
     }
 

@@ -7,17 +7,28 @@ import { db } from "../../firebase";
 import AnimatedNumber from "react-animated-numbers";
 import PlayedMatchList from "./PlayedMatchList";
 import Loader from "../Loader";
+import WLPieChart from "./WLPieChart";
 
 const PlayerDashboard = (props) => {
     const { currentUser } = useAuth();
     const [error, setError] = useState("");
+    // Data retrieved from user doc
     const [userData, setUserData] = useState({});
+    // Array of retrieved match data for each match played
+    const [matchData, setMatchData] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    
     useEffect(() => {
         const fetchData = async () => {
+            // Fetch user data
             const userDoc = await db.collection("users").doc(props.uid).get();
             setUserData(userDoc.data());
+            // Fetch data for each match played
+            const retrievedMatchData = await Promise.all(userDoc.data().matchesPlayed.slice(0, 20).map(async matchId => {
+                const matchDoc = await db.collection("completed-matches").doc(matchId).get();
+                return Promise.resolve(matchDoc.data());
+            }));
+            setMatchData(retrievedMatchData);
             setLoading(false);
         }
         fetchData();
@@ -49,17 +60,23 @@ const PlayerDashboard = (props) => {
             </Row>
             <Row className="h-100">
                 <Col md={3} className="h-100 mb-3">
-                    <Card className="content-card shadow" style={{height: "500px"}}>
-                        <Card.Body>
-                            <p className="text-title">Statistics <i className="fas fa-chart-pie" style={{fontSize: 16}}></i></p>
+                    <Card className="content-card shadow" style={{minHeight: "500px"}}>
+                        <Card.Body className="h-100">
+                            <p className="text-title mb-2">Statistics <i className="fas fa-chart-pie" style={{fontSize: 16}}></i></p>
+                            { loading ? <Loader /> : 
+                            <>
+                                <WLPieChart matchData={matchData}/>
+                                <p className="mt-4">Matches played: <span className="text-muted">{userData.matchesPlayed.length}</span></p>
+                                <p className="mt-1">Date joined: <span className="text-muted">{currentUser.metadata.creationTime.split(" ").slice(0, 4).join(" ")}</span></p>
+                            </> }
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col className="mb-3">
                     <Card className="content-card shadow" style={{height: "500px"}}>
-                        <Card.Body>
-                            <p className="text-title">Match History <i className="fas fa-history" style={{fontSize: 16}}></i></p>
-                            { loading ? <Loader /> : <PlayedMatchList userData={userData}/> }
+                        <Card.Body className="h-100 pb-5">
+                            <p className="text-title mb-2">Match History <i className="fas fa-history" style={{fontSize: 16}}></i></p>
+                            { loading ? <Loader /> : <PlayedMatchList matchData={matchData} />}
                         </Card.Body>
                     </Card>
                 </Col>

@@ -70,3 +70,51 @@
         flex-direction: column;
     }
 }
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    border-radius: 15px;
+    background: rgb(202, 201, 201);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(170, 170, 170);
+}
+
+.pie-chart-container {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+}
+
+.pie-chart-cover {
+    background-color: white;
+    transform: rotate(90deg);
+    flex-direction: column;
+}
+
+.pie-chart {
+    transform: rotate(-90deg);
+}
+
+.pie-chart, .pie-chart-cover {
+    width: calc(100% - 15px);
+    height: calc(100% - 15px);
+}
+
+.pie-chart-container, .pie-chart, .pie-chart-cover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
