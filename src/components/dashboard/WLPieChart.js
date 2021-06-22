@@ -16,7 +16,7 @@ const WLPieChart = (props) => {
     }, [props.matchData])
 
     return (
-        <div className="pie-chart-container shadow-lg">
+        <div className="pie-chart-container shadow">
             <div className="pie-chart" style={{background: props.matchData.length > 0 ? `conic-gradient( #9aff63 ${180 * wLPercent}deg,  #ff745c 0 180deg,  white 0)` : "white"}}>
                 <div className="pie-chart-cover">
                     <p style={{fontSize: "30px"}} className="mt-5">{props.matchData.length > 0 ? wLPercent.toFixed(2) : "0.00"}</p>

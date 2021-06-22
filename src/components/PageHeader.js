@@ -84,12 +84,11 @@ const SignOutAndProfileInputs = () => {
             setError("");
             setLoading(true);
             await signout();
+            setLoading(false);
             history.push("/")
         } catch {
             setError("Failed to sign out");
         }
-        
-        setLoading(false);
     }
 
     return (

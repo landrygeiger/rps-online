@@ -90,9 +90,12 @@ export const Login = () => {
             setError("");
             setLoading(true);
             await login(emailRef.current.value, passwordRef.current.value);
-            setShowRedirect(true);
-            history.push(redirect);
-            console.log(redirect);
+            // I have no idea why but this history.push() doesn't "work" unless you give it some time after logging in.
+            // Signing up works fine. Probably my async spaghetti code.
+            setTimeout(() => {
+                history.push(redirect);
+            }, 500);
+            
         } catch {
             setError("Failed to login.");
         }
