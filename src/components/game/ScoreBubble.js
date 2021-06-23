@@ -2,8 +2,8 @@
 const ScoreBubble = (props) => {
     const filled = props.matchData[`player${props.player}Score`] >= props.number;
     const style = {
-        backgroundColor: filled ? "#0275d8" : "white",
-        border: filled ? "none" : "2px solid gray",
+
+        border: filled ? "2px solid #0275d8" : "2px solid rgb(196, 196, 196)",
         borderRadius: "50%",
         width: props.small ? "15px" : "20px",
         height: props.small ? "15px" : "20px",

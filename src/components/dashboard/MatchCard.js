@@ -1,11 +1,8 @@
-
 import { Col, Row } from "react-bootstrap";
 import ScoreBubble from "../game/ScoreBubble";
-import { useAuth } from "../../contexts/AuthContext";
+import { Link } from "react-router-dom";
 
 const MatchCard = (props) => {
-    const { currentUser } = useAuth();
-
     return (
         <div className="shadow mb-4 mx-4 w-100" style={{borderRadius: "20px", position: "relative", maxWidth: "625px"}}>
 
@@ -13,7 +10,9 @@ const MatchCard = (props) => {
                     <Row>
                         
                         <Col className="d-flex flex-column">
-                            <p className="mb-1">{props.matchData.player1}</p>
+                            <Link to={`/user/${props.matchData.player1Id}`} style={{textDecoration: "none", color: "black"}}>
+                                <p className="mb-1">{props.matchData.player1}</p>
+                            </Link>
                             <div className="d-flex">
                                 <ScoreBubble number={1} player={1} matchData={props.matchData} small />
                                 <ScoreBubble number={2} player={1} matchData={props.matchData} small />
@@ -21,11 +20,13 @@ const MatchCard = (props) => {
                             </div>
                         </Col>
                         <Col xs="auto" className="d-flex justify-content-center align-items-center">
-                            { props.matchData.status.data.winner === currentUser.username &&
-                                <i style={{fontSize: "25px", textAlign: "center"}} className="fas fa-trophy" /> }
+                            { props.matchData.status.data.winner === props.username &&
+                                <i style={{fontSize: "20px", textAlign: "center"}} className="fas fa-trophy yellow" /> }
                         </Col>
                         <Col className="d-flex flex-column">
-                            <p className="mb-1" style={{textAlign: "right"}}>{props.matchData.player2}</p>
+                            <Link to={`/user/${props.matchData.player2Id}`} style={{textDecoration: "none", color: "black"}}>
+                                <p className="mb-1" style={{textAlign: "right", }}>{props.matchData.player2}</p>
+                            </Link>
                             <div className="d-flex justify-content-end">
                                 <ScoreBubble number={1} player={2} matchData={props.matchData} small />
                                 <ScoreBubble number={2} player={2} matchData={props.matchData} small />

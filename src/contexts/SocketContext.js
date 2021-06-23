@@ -14,7 +14,7 @@ export const SocketProvider = ({ children }) => {
     const connect = () => {
         // Promise that resolves once connection to server is established
         return new Promise((resolve, reject) => {
-            const socket = io("http://localhost:3030");
+            const socket = io();
             socket.on("connect", () => {
                 setConnected(true);
                 setSocket(socket);

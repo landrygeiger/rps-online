@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 
 const WLPieChart = (props) => {
-    const { currentUser } = useAuth();
     const [wLPercent, setWLPercent] = useState(0);
 
     useEffect(() => {
         let wins = 0;
         props.matchData.forEach(match => {
-            if (match.status.data.winner === currentUser.username) {
+            if (match.status.data.winner === props.username) {
                 wins++;
             }
         });

@@ -89,7 +89,7 @@
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: rgb(170, 170, 170);
+    background: rgb(196, 196, 196);
 }
 
 .pie-chart-container {
@@ -117,4 +117,8 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+}
+
+.yellow {
+    color: #ebeb5b;
 }

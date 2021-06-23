@@ -1,7 +1,7 @@
 import { Card, Row, Col, Button, Alert } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useSocketContext } from "../../contexts/SocketContext";
 import { db } from "../../firebase";
 import AnimatedNumber from "react-animated-numbers";
@@ -11,17 +11,24 @@ import WLPieChart from "./WLPieChart";
 
 const PlayerDashboard = (props) => {
     const { currentUser } = useAuth();
+    const { userId } = useParams();
     const [error, setError] = useState("");
     // Data retrieved from user doc
     const [userData, setUserData] = useState({});
     // Array of retrieved match data for each match played
     const [matchData, setMatchData] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const history = useHistory();
     
     useEffect(() => {
         const fetchData = async () => {
             // Fetch user data
-            const userDoc = await db.collection("users").doc(props.uid).get();
+            setLoading(true);
+            const userDoc = await db.collection("users").doc(userId ?? props.uid).get();
+            if (!userDoc.exists) {
+                return history.push("/");
+            }
             setUserData(userDoc.data());
             // Fetch data for each match played
             const retrievedMatchData = await Promise.all(userDoc.data().matchesPlayed.slice(0, 20).map(async matchId => {
@@ -32,7 +39,12 @@ const PlayerDashboard = (props) => {
             setLoading(false);
         }
         fetchData();
-    }, []);
+    }, [userId, props.uid]);
+
+    const getFormattedDate = (date) => {
+        const dateArr = date.toString().split(" ").slice(1, 4);
+        return `${dateArr[0]} ${dateArr[1]}, ${dateArr[2]}`;
+    }
 
     return (
         <div className="w-100">
@@ -42,8 +54,8 @@ const PlayerDashboard = (props) => {
                     <Card className="content-card shadow">
                         <Card.Body>
                         <div className="d-flex justify-content-between align-items-center">
-                            <p className="text-title">{currentUser.username}</p>
-                            <div className="d-flex align-items-center text-title">{ loading ? "----" : <AnimatedNumber animateToNumber={userData.ranking}/>} <i className="fas fa-trophy mx-1" style={{fontSize: 16}}></i></div>
+                            <p className="text-title">{userData.username}</p>
+                            <div className="d-flex align-items-center text-title">{ loading ? "----" : <AnimatedNumber animateToNumber={userData.ranking}/>} <i className="fas fa-trophy mx-1 yellow" style={{fontSize: 16}}></i></div>
                         </div>
                         </Card.Body>
                     </Card>
@@ -65,9 +77,9 @@ const PlayerDashboard = (props) => {
                             <p className="text-title mb-2">Statistics <i className="fas fa-chart-pie" style={{fontSize: 16}}></i></p>
                             { loading ? <Loader /> : 
                             <>
-                                <WLPieChart matchData={matchData}/>
+                                <WLPieChart matchData={matchData} username={userData.username}/>
                                 <p className="mt-4">Matches played: <span className="text-muted">{userData.matchesPlayed.length}</span></p>
-                                <p className="mt-1">Date joined: <span className="text-muted">{currentUser.metadata.creationTime.split(" ").slice(0, 4).join(" ")}</span></p>
+                                <p className="mt-1">Date joined: <span className="text-muted">{getFormattedDate(userData.dateJoined.toDate())}</span></p>
                             </> }
                         </Card.Body>
                     </Card>
@@ -76,7 +88,7 @@ const PlayerDashboard = (props) => {
                     <Card className="content-card shadow" style={{height: "500px"}}>
                         <Card.Body className="h-100 pb-5">
                             <p className="text-title mb-2">Match History <i className="fas fa-history" style={{fontSize: 16}}></i></p>
-                            { loading ? <Loader /> : <PlayedMatchList matchData={matchData} />}
+                            { loading ? <Loader /> : <PlayedMatchList matchData={matchData} username={userData.username} />}
                         </Card.Body>
                     </Card>
                 </Col>

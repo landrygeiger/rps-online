@@ -93,14 +93,13 @@ export const Login = () => {
             // I have no idea why but this history.push() doesn't "work" unless you give it some time after logging in.
             // Signing up works fine. Probably my async spaghetti code.
             setTimeout(() => {
+                setLoading(false);
                 history.push(redirect);
             }, 500);
             
         } catch {
             setError("Failed to login.");
         }
-
-        setLoading(false);
     }
 
     return (

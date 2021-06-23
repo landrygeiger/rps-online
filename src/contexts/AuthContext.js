@@ -18,7 +18,8 @@ export const AuthProvider = ({ children }) => {
             username,
             ranking: 1000,
             xp: 0,
-            matchesPlayed: []
+            matchesPlayed: [],
+            dateJoined: Date()
         });
     }
 
